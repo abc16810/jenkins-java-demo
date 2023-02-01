@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: "inbound-agent"
+    image: "jenkins/inbound-agent:jdk11"
+    imagePullPolicy: "IfNotPresent"
+    name: "jnlp"
+    # resources:
+    #   requests:
+    #     cpu: "100m"
+    #     memory: "256Mi"
+  nodeSelector:
+    kubernetes.io/hostname: "utility1"
+  tolerations:
+  - effect: "NoSchedule"
+    operator: "Exists"
+ 
