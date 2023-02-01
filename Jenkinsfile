@@ -6,6 +6,7 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
     node(POD_LABEL) {   //POD_LABEL 生成的唯一标签
         stage('Run shell') {
             checkout scm
+            sh 'sleep 10000'
             sh 'echo hello world'
             sh "pwd && ls -l"
         }
