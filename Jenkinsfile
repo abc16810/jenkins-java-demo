@@ -5,6 +5,7 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
 ) {
     node(POD_LABEL) {   //POD_LABEL 生成的唯一标签
         stage('Run shell') {
+            checkout scm
             sh 'echo hello world'
             sh "pwd && ls -l"
         }
