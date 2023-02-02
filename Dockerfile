@@ -7,7 +7,7 @@ ENV TZ=Asia/Shanghai
 
 WORKDIR /srv
 
-COPY target/*.jar /srv/project.jar
+COPY */target/*.jar /srv/project.jar
 
 EXPOSE 8080
 
