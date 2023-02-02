@@ -32,6 +32,10 @@ spec:
   tolerations:
   - effect: "NoSchedule"
     operator: "Exists"
+  hostAliases:
+  - hostnames:
+    - "myregistry.io"
+    ip: "10.4.55.209"
   volumes:
   - hostPath:
       path: "/run/containerd/containerd.sock"

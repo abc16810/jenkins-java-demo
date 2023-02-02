@@ -42,15 +42,15 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                 }
                 println "Current branch is ${params.Name}, Commit ID is ${COMMIT_ID}, Image TAG is ${TAG}"
             }
-            stage('Maven编译打包') {
-                container('maven') {
-                    sh '''
-                    cd project
-                    # mvn clean package -Dmaven.test.skip=true
-                    mvn -B -ntp clean package -DskipTests
-                    '''
-                }
-            }
+            // stage('Maven编译打包') {
+            //     container('maven') {
+            //         sh '''
+            //         cd project
+            //         # mvn clean package -Dmaven.test.skip=true
+            //         mvn -B -ntp clean package -DskipTests
+            //         '''
+            //     }
+            // }
             stage("构建docker镜像"){
                 container('nerdctl') {   //指定容器
                     withCredentials([usernamePassword(credentialsId: 'harborAuth', passwordVariable: 'HARBOR_PASSWORD', usernameVariable: 'HARBOR_USER')]) {
