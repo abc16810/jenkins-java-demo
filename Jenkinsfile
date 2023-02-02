@@ -42,15 +42,15 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                 }
                 println "Current branch is ${params.Name}, Commit ID is ${COMMIT_ID}, Image TAG is ${TAG}"
             }
-            // stage('Maven编译打包') {
-            //     container('maven') {
-            //         sh '''
-            //         cd project
-            //         # mvn clean package -Dmaven.test.skip=true
-            //         mvn -B -ntp clean package -DskipTests
-            //         '''
-            //     }
-            // }
+            stage('Maven编译打包') {
+                container('maven') {
+                    sh '''
+                    cd project
+                    # mvn clean package -Dmaven.test.skip=true
+                    mvn -B -ntp clean package -DskipTests
+                    '''
+                }
+            }
             stage("构建docker镜像"){
                 container('nerdctl') {   //指定容器
                     withCredentials([usernamePassword(credentialsId: 'harborAuth', passwordVariable: 'HARBOR_PASSWORD', usernameVariable: 'HARBOR_USER')]) {
@@ -69,18 +69,16 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                 if ( params.Name == 'main' || params.Name == 'master'){
                     input "确认要部署线上环境吗？"
                 }
-                steps {
-                    container('kubectl') {
-                        sh "sed -i 's/<BUILD_TAGS>/${TAG}/' rc.yaml"   //更新镜像tag
-                        sh '''
-                        PATH=/opt/bitnami/kubectl/bin:$PATH   # assign path
-                        kubectl get pod
-                        # kubectl apply -f rc.yaml
-                        '''
+                container('kubectl') {
+                    sh "sed -i 's/<BUILD_TAGS>/${TAG}/' rc.yaml"   //更新镜像tag
+                    sh '''
+                    PATH=/opt/bitnami/kubectl/bin:$PATH   # assign path
+                    kubectl get pod
+                    # kubectl apply -f rc.yaml
+                    '''
                 }
+                
             }
-        }
-
             // Archive the built artifacts
             //archive (includes: 'pkg/*.gem')
             stage("归档"){
