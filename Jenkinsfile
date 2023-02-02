@@ -9,12 +9,8 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             gitParameter(branch: '',
                         branchFilter: 'origin/(.*)',
                         defaultValue: 'master',
-                        description: '',
+                        description: '选择分支',
                         name: 'Name',
-                        quickFilterEnabled: false,
-                        selectedValue: 'NONE',
-                        sortMode: 'NONE',
-                        tagFilter: '*',
                         type: 'PT_BRANCH',
                         useRepository: '.*assessment-web.git')
         ])
@@ -45,9 +41,10 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             }
             stage('Maven编译打包') {
                 container('maven') {
-                   
-                        sh 'mvn -v && ls -l && pwd'
-                 
+                    sh '''
+                    cp project
+                    mvn -B -ntp clean package -DskipTests
+                    '''
                 }
             }
             // Archive the built artifacts
