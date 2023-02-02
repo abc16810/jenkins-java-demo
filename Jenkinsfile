@@ -28,11 +28,16 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             'IMAGE_NAME=my-test-java'
             ]){
             stage('Run shell') {
-                sh 'echo hello world'
                 println "开始对分支 ${params.Name} 进行构建"
-                git branch: "${params.Name}", credentialsId: "${GIT_AUTH_ID}", url: "${REPO_HTTP}"
-                git 'http://10.4.56.155/maojinglei/finance-process-service.git'
-                sh "pwd && ls -l"
+                //检出指定分支代码
+                dir('project'){
+                    git branch: "${params.Name}", credentialsId: "${GIT_AUTH_ID}", url: "${REPO_HTTP}"
+                    script {
+                        COMMIT_ID = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                        TAG = "${params.Name}" + '-' + COMMIT_ID
+                    }
+                }
+                println "Current branch is ${params.Name}, Commit ID is ${COMMIT_ID}, Image TAG is ${TAG}"
             }
             stage('Get a Maven project') {
                 container('maven') {
