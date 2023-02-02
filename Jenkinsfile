@@ -27,6 +27,10 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             'HARBOR_AUTH=credentials("harborAuth")',
             'IMAGE_NAME=my-test-java'
             ]){
+            checkout scm
+            stage('单元测试'){
+                echo "测试阶段"
+            }
             stage('Run shell') {
                 println "开始对分支 ${params.Name} 进行构建"
                 //检出指定分支代码
