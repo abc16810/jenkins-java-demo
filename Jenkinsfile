@@ -15,22 +15,34 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                         selectedValue: 'NONE',
                         sortMode: 'NONE',
                         tagFilter: '*',
-                        type: 'PT_BRANCH')
+                        type: 'PT_BRANCH',
+                        useRepository: '.*assessment-web.git')
         ])
     ])
     node(POD_LABEL) {   //POD_LABEL 生成的唯一标签
-        stage('Run shell') {
-            sh 'echo hello world'
-            println "开始对分支 ${params.Name} 进行构建"
-            git 'http://10.4.56.155/maojinglei/finance-process-service.git'
-            sh "pwd && ls -l"
-        }
-        stage('Get a Maven project') {
-            container('maven') {
-                stage('Build a Maven project') {
-                    sh 'mvn -v && ls -l && pwd'
+        withEnv([
+            'REPO_HTTP=http://10.4.56.155/lumanman/performance-task-assessment-web.git',
+            'GIT_AUTH_ID=ea2f709f-9cac-4978-aeb2-9fc37e8e9667',
+            'HARBOR_ADDRESS=myregistry.io:8088',
+            'HARBOR_AUTH=credentials("harborAuth")',
+            'IMAGE_NAME=my-test-java'
+            ]){
+            stage('Run shell') {
+                sh 'echo hello world'
+                println "开始对分支 ${params.Name} 进行构建"
+                git branch: "${params.Name}", credentialsId: "${GIT_AUTH_ID}", url: "${REPO_HTTP}"
+                git 'http://10.4.56.155/maojinglei/finance-process-service.git'
+                sh "pwd && ls -l"
+            }
+            stage('Get a Maven project') {
+                container('maven') {
+                    stage('Build a Maven project') {
+                        sh 'mvn -v && ls -l && pwd'
+                    }
                 }
             }
-        }
+            // Archive the built artifacts
+            //archive (includes: 'pkg/*.gem')
+        }   
     }
 }
