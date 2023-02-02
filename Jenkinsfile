@@ -1,7 +1,7 @@
 //scripts pipeline
 podTemplate(yaml: readTrusted('pod.yaml'), containers: [
     containerTemplate(name: 'maven', image: 'myregistry.io:8088/library/maven:3.8.1-jdk-8', command: 'sleep', args: '99d')],
-    volumes: [hostPathVolume(hostPath: '/home/jenkins/m2', mountPath: '/root/.m2'), hostPathVolume(hostPath: '', mountPath: '/usr/share/maven/ref')],
+    volumes: [hostPathVolume(hostPath: '/home/jenkins/m2', mountPath: '/root/.m2')],
     workspaceVolume: hostPathWorkspaceVolume(hostPath: "/home/jenkins/agent") //持久化工作目录
 ) {
     properties([
