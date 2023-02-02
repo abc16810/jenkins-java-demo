@@ -2,7 +2,7 @@
 podTemplate(yaml: readTrusted('pod.yaml'), containers: [
     containerTemplate(name: 'maven', image: 'myregistry.io:8088/library/maven:3.8.1-jdk-8', command: 'sleep', args: '99d')],
     volumes: [hostPathVolume(hostPath: '/home/jenkins/m2', mountPath: '/root/.m2')],
-    workspaceVolume: hostPathWorkspaceVolume(hostPath: "/home/jenkins/agent", readOnly: false) //持久化工作目录
+    workspaceVolume: hostPathWorkspaceVolume(hostPath: "/home/jenkins/agent") //持久化工作目录
 ) {
     properties([
         parameters([
@@ -21,7 +21,7 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
     ])
     node(POD_LABEL) {   //POD_LABEL 生成的唯一标签
         withEnv([
-            'REPO_HTTP=http://10.4.56.155/lumanman/performance-task-assessment-web.git',
+            'REPO_HTTP=http://10.4.56.155/maojinglei/finance-process-service.git',
             'GIT_AUTH_ID=ea2f709f-9cac-4978-aeb2-9fc37e8e9667',
             'HARBOR_ADDRESS=myregistry.io:8088',
             'HARBOR_AUTH=credentials("harborAuth")',
