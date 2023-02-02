@@ -31,7 +31,7 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             stage('单元测试'){
                 echo "测试阶段"
             }
-            stage('Run shell') {
+            stage('克隆代码') {
                 println "开始对分支 ${params.Name} 进行构建"
                 //检出指定分支代码
                 dir('project'){
@@ -43,11 +43,11 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                 }
                 println "Current branch is ${params.Name}, Commit ID is ${COMMIT_ID}, Image TAG is ${TAG}"
             }
-            stage('Get a Maven project') {
+            stage('Maven编译打包') {
                 container('maven') {
-                    stage('Build a Maven project') {
+                   
                         sh 'mvn -v && ls -l && pwd'
-                    }
+                 
                 }
             }
             // Archive the built artifacts
