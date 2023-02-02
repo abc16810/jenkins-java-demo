@@ -1,7 +1,7 @@
 //scripts pipeline
 podTemplate(yaml: readTrusted('pod.yaml'), containers: [
     containerTemplate(name: 'maven', image: 'myregistry.io:8088/library/maven:3.8.1-jdk-8', command: 'sleep', args: '99d')],
-    volumes: [hostPathVolume(hostPath: '/home/jenkins/m2', mountPath: '/root/.m2')],
+    volumes: [hostPathVolume(hostPath: '/home/jenkins/m2', mountPath: '/root/.m2'), hostPathVolume(hostPath: '', mountPath: '/usr/share/maven/ref')],
     workspaceVolume: hostPathWorkspaceVolume(hostPath: "/home/jenkins/agent") //持久化工作目录
 ) {
     properties([
@@ -12,7 +12,7 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                         description: '选择分支',
                         name: 'Name',
                         type: 'PT_BRANCH',
-                        useRepository: '.*assessment-web.git')
+                        useRepository: '.*process-service.git')
         ])
     ])
     node(POD_LABEL) {   //POD_LABEL 生成的唯一标签

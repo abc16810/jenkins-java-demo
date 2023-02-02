@@ -1,0 +1,40 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository>/usr/share/maven/ref/repository</localRepository>
+
+    <proxies>
+        <proxy>
+            <active>true</active>
+            <protocol>http</protocol>
+            <host>10.4.56.230</host>
+            <port>3128</port>
+            <nonProxyHosts>localhost|some.host.com</nonProxyHosts>
+        </proxy>
+        <proxy>
+            <active>true</active>
+            <protocol>https</protocol>
+            <host>10.4.56.230</host>
+            <port>3128</port>
+            <nonProxyHosts>localhost|some.host.com</nonProxyHosts>
+        </proxy>
+    </proxies>
+
+
+    <profiles>
+        <profile>
+            <id>jdk-1.8</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <jdk>1.8</jdk>
+            </activation>
+            <properties>
+                <maven.compiler.source>1.8</maven.compiler.source>
+                <maven.compiler.target>1.8</maven.compiler.target>
+                <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+            </properties>
+        </profile>
+    </profiles>
+
+</settings>
