@@ -49,6 +49,10 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             }
             // Archive the built artifacts
             //archive (includes: 'pkg/*.gem')
+            stage("归档"){
+                archiveArtifacts artifacts: 'project/target/*.jar', followSymlinks: false, onlyIfSuccessful: true
+            }
+            
         }   
     }
 }
