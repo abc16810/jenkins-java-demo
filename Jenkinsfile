@@ -13,8 +13,12 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                         name: 'Name',
                         type: 'PT_BRANCH',
                         useRepository: '.*process-service.git')
-        ])
+        ]),
+        //构建历史
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '30', numToKeepStr: '10'))
     ])
+
+
     node(POD_LABEL) {   //POD_LABEL 生成的唯一标签
         withEnv([
             'REPO_HTTP=http://10.4.56.155/maojinglei/finance-process-service.git',
@@ -43,10 +47,25 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                 container('maven') {
                     sh '''
                     cd project
+                    # mvn clean package -Dmaven.test.skip=true
                     mvn -B -ntp clean package -DskipTests
                     '''
                 }
             }
+            stage("构建docker镜像"){
+                container('nerdctl') {   //指定容器
+                    sh '''
+                    set +x
+                    cd project && id && pwd
+                    update-ca-certificates
+                    nerdctl login -u ${HARBOR_AUTH_USR} -p ${HARBOR_AUTH_PSW}  ${HARBOR_ADDRESS}
+                    '''
+                    sh "ls -l && nerdctl build  -t ${HARBOR_ADDRESS}/library/${IMAGE_NAME}:${TAG} ."
+                    sh "nerdctl push ${HARBOR_ADDRESS}/library/${IMAGE_NAME}:${TAG}"
+                }
+            }
+
+
             // Archive the built artifacts
             //archive (includes: 'pkg/*.gem')
             stage("归档"){
