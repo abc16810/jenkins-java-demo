@@ -22,6 +22,7 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
         stage('Run shell') {
             sh 'echo hello world'
             println "开始对分支 ${params.Name} 进行构建"
+            git 'http://10.4.56.155/maojinglei/finance-process-service.git'
             sh "pwd && ls -l"
         }
         stage('Get a Maven project') {
