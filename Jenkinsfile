@@ -65,6 +65,22 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
                     }
                 }
             }
+            stage('Deploying to K8s') {
+                if ( params.Name == 'main' || params.Name == 'master'){
+                    input "确认要部署线上环境吗？"
+                }
+                steps {
+                    container('kubectl') {
+                        sh "sed -i 's/<BUILD_TAGS>/${TAG}/' rc.yaml"   //更新镜像tag
+                        sh '''
+                        PATH=/opt/bitnami/kubectl/bin:$PATH   # assign path
+                        kubectl get pod
+                        # kubectl apply -f rc.yaml
+                        '''
+                }
+            }
+        }
+
             // Archive the built artifacts
             //archive (includes: 'pkg/*.gem')
             stage("归档"){

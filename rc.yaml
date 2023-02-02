@@ -18,7 +18,7 @@ spec:
         operator: "Exists"
       containers:
         - name: nginx
-          image: myregistry.io:8088/library/my-java:<BUILD_TAGS>
+          image: myregistry.io:8088/library/my-test-java:<BUILD_TAGS>
           imagePullPolicy: "IfNotPresent"
           ports:
            - containerPort: 8080
