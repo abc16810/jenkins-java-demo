@@ -24,7 +24,6 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             'REPO_HTTP=http://10.4.56.155/maojinglei/finance-process-service.git',
             'GIT_AUTH_ID=ea2f709f-9cac-4978-aeb2-9fc37e8e9667',
             'HARBOR_ADDRESS=myregistry.io:8088',
-            'HARBOR_AUTH=credentials("harborAuth")',
             'IMAGE_NAME=my-test-java'
             ]){
             checkout scm
@@ -54,18 +53,18 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             }
             stage("构建docker镜像"){
                 container('nerdctl') {   //指定容器
-                    sh '''
-                    set +x
-                    cd project && id && pwd
-                    update-ca-certificates
-                    nerdctl login -u ${HARBOR_AUTH_USR} -p ${HARBOR_AUTH_PSW}  ${HARBOR_ADDRESS}
-                    '''
-                    sh "ls -l && nerdctl build  -t ${HARBOR_ADDRESS}/library/${IMAGE_NAME}:${TAG} ."
-                    sh "nerdctl push ${HARBOR_ADDRESS}/library/${IMAGE_NAME}:${TAG}"
+                    withCredentials([usernamePassword(credentialsId: 'harborAuth', passwordVariable: 'HARBOR_PASSWORD', usernameVariable: 'HARBOR_USER')]) {
+                        sh '''
+                        set +x
+                        cd project && id && pwd
+                        update-ca-certificates
+                        nerdctl login -u ${HARBOR_USER} -p ${HARBOR_PASSWORD}  ${HARBOR_ADDRESS}
+                        '''
+                        sh "ls -l && nerdctl build  -t ${HARBOR_ADDRESS}/library/${IMAGE_NAME}:${TAG} ."
+                        sh "nerdctl push ${HARBOR_ADDRESS}/library/${IMAGE_NAME}:${TAG}"
+                    }
                 }
             }
-
-
             // Archive the built artifacts
             //archive (includes: 'pkg/*.gem')
             stage("归档"){

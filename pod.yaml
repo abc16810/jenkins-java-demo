@@ -10,9 +10,39 @@ spec:
     #   requests:
     #     cpu: "100m"
     #     memory: "256Mi"
+  - name: "nerdctl"
+    image: "nerdctl:v1"
+    imagePullPolicy: "IfNotPresent"
+    command:
+      - sleep
+    args:
+      - 99d
+    volumeMounts:
+    - mountPath: "/usr/local/share/ca-certificates"
+      name: "ca"
+      readOnly: true
+    - mountPath: "/run/containerd/containerd.sock"
+      name: "containerd"
+      readOnly: true
+    - mountPath: "/run/buildkit/buildkitd.sock"
+      name: "buildkitd"
+      readOnly: true
   nodeSelector:
     kubernetes.io/hostname: "utility1"
   tolerations:
   - effect: "NoSchedule"
     operator: "Exists"
- 
+  volumes:
+  - hostPath:
+      path: "/run/containerd/containerd.sock"
+    name: "containerd"
+  - name: "ca"
+    secret:
+      optional: false
+      secretName: "docker-ca"
+  - hostPath:
+      path: "/run/buildkit/buildkitd.sock"
+    name: "buildkitd"
+  - hostPath:
+      path: "/home/jenkins/config"
+    name: "config"
