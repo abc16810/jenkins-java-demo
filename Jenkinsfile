@@ -42,7 +42,7 @@ podTemplate(yaml: readTrusted('pod.yaml'), containers: [
             stage('Maven编译打包') {
                 container('maven') {
                     sh '''
-                    cp project
+                    cd project
                     mvn -B -ntp clean package -DskipTests
                     '''
                 }
